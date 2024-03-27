@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <CheckBox
+        android:id="@+id/checkBox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CheckBox1" />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_toEndOf="@id/checkBox1"
+        android:text="CheckBox2" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/checkBox1">
+
+        <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Option 1" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Option 2" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/radioGroup"
+        android:layout_marginTop="102dp"
+        android:text="Submit" />
+
+    <Button
+        android:id="@+id/clear_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/radioGroup"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="101dp"
+        android:layout_toEndOf="@id/submit_button"
+        android:text="Clear" />
+
+</RelativeLayout>
+
+#java
+
+package com.reva.myapplication;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    private CheckBox checkBox1, checkBox2;
+    private RadioButton radioButton1, radioButton2;
+    private RadioGroup radioGroup;
+    private Button submitButton, clearButton;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        checkBox1 = findViewById(R.id.checkBox1);
+        checkBox2 = findViewById(R.id.checkBox2);
+        radioButton1 = findViewById(R.id.radioButton1);
+        radioButton2 = findViewById(R.id.radioButton2);
+        radioGroup = findViewById(R.id.radioGroup);
+        submitButton = findViewById(R.id.submit_button);
+        clearButton = findViewById(R.id.clear_button);
+
+        checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(MainActivity.this, "Option 1 selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(MainActivity.this, "Option 2 selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.radioButton1) {
+                    Toast.makeText(MainActivity.this, "Option A selected", Toast.LENGTH_SHORT).show();
+                } else if (checkedId == R.id.radioButton2) {
+                    Toast.makeText(MainActivity.this, "Option B selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!checkBox1.isChecked() && !checkBox2.isChecked()) {
+                    Toast.makeText(MainActivity.this, "Please select at least one option", Toast.LENGTH_SHORT).show();
+                } else if (radioGroup.getCheckedRadioButtonId() == -1) {
+                    Toast.makeText(MainActivity.this, "Please select at least one chk", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // Your submission logic here
+                    StringBuilder selectedOptions = new StringBuilder();
+                    if (checkBox1.isChecked()) {
+                        selectedOptions.append("Option 1 ");
+                    }
+                    if (checkBox2.isChecked()) {
+                        selectedOptions.append("Option 2 ");
+                    }
+                    int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                    if (selectedRadioButtonId != -1) {
+                        RadioButton selectedRadioButton = findViewById(selectedRadioButtonId);
+                        selectedOptions.append(selectedRadioButton.getText());
+                    }
+                    Toast.makeText(MainActivity.this, "Selected options: " + selectedOptions.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkBox1.setChecked(false);
+                checkBox2.setChecked(false);
+                radioGroup.clearCheck();
+            }
+        });
+    }
+}
